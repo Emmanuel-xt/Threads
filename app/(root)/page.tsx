@@ -3,8 +3,8 @@ import { UserButton } from "@clerk/nextjs";
 export default function Home() {
   return (
     <>
-      <h1 className="head-text">Home</h1>
-      {/* <UserButton afterSignOutUrl="/"/> */}
+      <h1 className="head-text">Home hello world</h1>
+      <UserButton afterSignOutUrl="/"/>
     </>
   )
 }
