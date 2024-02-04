@@ -1,7 +1,7 @@
 import { currentUser } from "@clerk/nextjs";
+import AccountProfile from "@components/forms/AccountProfile";
 import { redirect } from "next/navigation";
 
-import AccountProfile from "@components/forms/AccountProfile";
 
 async function Page() {
   const user = await currentUser();
@@ -27,6 +27,7 @@ async function Page() {
       </p>
 
       <section className='mt-9 bg-dark-2 p-10'>
+        {/* <p>Hello </p> */}
         <AccountProfile user={userData} btnTitle='Continue' />
       </section>
     </main>
