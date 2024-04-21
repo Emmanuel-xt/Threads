@@ -21,7 +21,6 @@ import { Textarea } from "@/components/ui/textarea";
 
 import { isBase64Image } from "@/lib/utils";
 
-import { UserValidation } from "@/lib/validations/user";
 import { useUploadThing } from "@lib/uploadthing";
 import { updateUser } from "@/lib/actions/user.actions";
 import { ThreadValidation } from "@lib/validations/thread";
@@ -43,7 +42,7 @@ function PostThread({ userId }: { userId: string }) {
   const router = useRouter();
   const pathname = usePathname();
 
-  const form = useForm<z.infer<typeof UserValidation>>({
+  const form = useForm<z.infer<typeof ThreadValidation>>({
     resolver: zodResolver(ThreadValidation),
     defaultValues: {
       thread: "",

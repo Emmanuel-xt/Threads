@@ -96,6 +96,7 @@ const ThreadCard = ({
               {
                 isComment && comments.length > 0 && (
                   <Link href={`/thread/${id}`}>
+                    <p className="mt-1 text-subtle-medium text-gray-1">{comments.length}</p>
                   </Link>
                 )
               }
