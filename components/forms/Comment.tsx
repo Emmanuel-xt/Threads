@@ -59,7 +59,7 @@ const Comment = ({ threadId, currentUserId, currentUserImg }: Props) => {
             <FormItem className="flex w-full flex-col gap-3">
               <FormLabel className="">
                 <Image
-                  src={currentUserImg}
+                  src={'/assest/logo.png'}
                   alt="Profile-Image"
                   width={48}
                   height={48}
