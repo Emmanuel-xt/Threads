@@ -19,10 +19,10 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 
+import { useUploadThing } from "@/lib/uploadthing";
 import { isBase64Image } from "@/lib/utils";
 
 import { UserValidation } from "@/lib/validations/user";
-import { useUploadThing } from "@lib/uploadthing";
 import { updateUser } from "@/lib/actions/user.actions";
 
 interface Props {
@@ -61,8 +61,8 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
     if (hasImageChanged) {
       const imgRes = await startUpload(files);
 
-      if (imgRes && imgRes[0].fileUrl) {
-        values.profile_photo = imgRes[0].fileUrl;
+      if (imgRes && imgRes[0].url ) {
+        values.profile_photo = imgRes[0].url;
       }
     }
 
