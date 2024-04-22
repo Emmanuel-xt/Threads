@@ -1,5 +1,6 @@
 'use server'
 
+import Thread from "@lib/models/thread.model";
 import User from "@lib/models/user.model"
 import { connectToDB } from "@lib/mongoose"
 import { revalidatePath } from "next/cache";
@@ -24,7 +25,7 @@ export async function updateUser({
 }: Params
 ): Promise<void> {
     try {
-       await connectToDB()
+        await connectToDB()
         const userUpdate = await User.findOneAndUpdate(
             {
                 id: userId
@@ -38,7 +39,7 @@ export async function updateUser({
             },
             { upsert: true }
         );
-        console.log('user update successful' , userUpdate)
+        console.log('user update successful', userUpdate)
 
         if (path === '/profile/edit') {
             revalidatePath(path)
@@ -48,12 +49,41 @@ export async function updateUser({
     }
 }
 
-export async function fetchUser(userId:string){
+export async function fetchUser(userId: string) {
     try {
         await connectToDB()
 
-        return await User.findOne({id : userId})
-    } catch (error : any) {
-        console.log('Failed to fetch user' , error.message)
+        return await User.findOne({ id: userId })
+    } catch (error: any) {
+        console.log('Failed to fetch user', error.message)
+    }
+}
+
+export async function fetchUserPosts(userId: string) {
+    try {
+        await connectToDB()
+
+        console.log('fetchUserPosts function running.....')
+        const threads = await User.findOne({ id: userId })
+            .populate({
+                path: 'threads',
+                model: Thread,
+                populate :{
+                    path: 'children',
+                    model: Thread,
+                    populate : {
+                        path : 'author',
+                        model : User,
+                        select : 'name image id'
+                    }
+
+                }
+
+            })
+            console.log('fetching users Posts functions was succesful' , threads)
+
+            return threads
+    } catch (error) {
+
     }
 }
