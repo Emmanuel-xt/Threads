@@ -3,6 +3,7 @@
 import Thread from "@lib/models/thread.model";
 import User from "@lib/models/user.model";
 import { connectToDB } from "@lib/mongoose";
+import { log } from "console";
 import { model } from "mongoose";
 import { revalidatePath } from "next/cache";
 
@@ -140,5 +141,33 @@ export async function fetchThreadById(id : string){
     return thread
   } catch (error : any) {
     console.log('error fetching thread' , error.message)
+  }
+}
+
+export async function addCommentToThread(threadId : string , commentText:string, userId:string , path : string ){
+  try {
+    await connectToDB()
+    const originalThread = await Thread.findById(threadId)
+    if(!originalThread) { 
+      throw new Error('Thread not Found')
+    }
+
+    const commentThread = new Thread({
+      text : commentText ,
+      author : userId,
+      parentId : threadId,
+    })
+
+    const savedCommentThread  = await commentThread.save()
+
+    originalThread.children.push(savedCommentThread._id)
+
+    await originalThread.save()
+
+    revalidatePath(path)
+
+    console.log('Adding comments to threads function worked .....')
+  } catch (error) {
+    
   }
 }

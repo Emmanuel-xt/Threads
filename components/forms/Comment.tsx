@@ -1,7 +1,6 @@
 "use client";
 
 import * as z from "zod";
-import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { usePathname, useRouter } from "next/navigation";
 import { ChangeEvent, useState } from "react";
@@ -24,7 +23,8 @@ import { isBase64Image } from "@/lib/utils";
 import { useUploadThing } from "@lib/uploadthing";
 import { updateUser } from "@/lib/actions/user.actions";
 import { CommentValidation } from "@lib/validations/thread";
-import { createThread } from "@lib/actions/threads.actions";
+import { addCommentToThread, createThread } from "@lib/actions/threads.actions";
+import Image from "next/image";
 
 interface Props {
   threadId: string;
@@ -43,11 +43,12 @@ const Comment = ({ threadId, currentUserId, currentUserImg }: Props) => {
   });
 
   const onSubmit = async (values: z.infer<typeof CommentValidation>) => {
-    //   await createThread({
-    //       text : values.thread,
-    //       author:userId , communityId : null , path:pathname
-    //   })
-    //   router.push('/')
+    await addCommentToThread(
+      threadId,
+      values.thread,
+      JSON.parse(currentUserId),
+      pathname
+    );
   };
   return (
     <Form {...form}>
@@ -56,14 +57,14 @@ const Comment = ({ threadId, currentUserId, currentUserImg }: Props) => {
           control={form.control}
           name="thread"
           render={({ field }) => (
-            <FormItem className="flex w-full flex-col gap-3">
+            <FormItem className="flex w-full  gap-3">
               <FormLabel className="">
                 <Image
-                  src={'/assest/logo.png'}
+                  src={currentUserImg}
                   alt="Profile-Image"
                   width={48}
                   height={48}
-                  classname="rounded-full object-cover"
+                  className="rounded-full object-cover"
                 />
               </FormLabel>
               <FormControl className="border-none bg-transparent">
