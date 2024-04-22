@@ -27,6 +27,7 @@ export async function updateUser({
 ): Promise<void> {
     try {
         await connectToDB()
+        console.log('creating/updating user ...')
         const userUpdate = await User.findOneAndUpdate(
             {
                 id: userId
@@ -53,6 +54,7 @@ export async function updateUser({
 export async function fetchUser(userId: string) {
     try {
         await connectToDB()
+        console.log('fetching user....')
 
         return await User.findOne({ id: userId })
     } catch (error: any) {
@@ -104,46 +106,47 @@ export async function fetchUsers({
   }) {
     try {
       connectToDB();
-  
+      console.log('fetching all users...')
+      
       // Calculate the number of users to skip based on the page number and page size.
       const skipAmount = (pageNumber - 1) * pageSize;
-  
+      
       // Create a case-insensitive regular expression for the provided search string.
       const regex = new RegExp(searchString, "i");
-  
+      
       // Create an initial query object to filter users.
       const query: FilterQuery<typeof User> = {
-        id: { $ne: userId }, // Exclude the current user from the results.
+          id: { $ne: userId }, // Exclude the current user from the results.
       };
-  
+      
       // If the search string is not empty, add the $or operator to match either username or name fields.
       if (searchString.trim() !== "") {
-        query.$or = [
+          query.$or = [
           { username: { $regex: regex } },
           { name: { $regex: regex } },
         ];
-      }
-  
-      // Define the sort options for the fetched users based on createdAt field and provided sort order.
-      const sortOptions = { createdAt: sortBy };
-  
-      const usersQuery = User.find(query)
-        .sort(sortOptions)
-        .skip(skipAmount)
-        .limit(pageSize);
-  
-      // Count the total number of users that match the search criteria (without pagination).
-      const totalUsersCount = await User.countDocuments(query);
-  
-      const users = await usersQuery.exec();
-  
-      // Check if there are more users beyond the current page.
-      const isNext = totalUsersCount > skipAmount + users.length;
-  
-      return { users, isNext };
-    } catch (error) {
-      console.error("Error fetching users:", error);
-      throw error;
     }
-  }
+    
+    // Define the sort options for the fetched users based on createdAt field and provided sort order.
+    const sortOptions = { createdAt: sortBy };
   
+    const usersQuery = User.find(query)
+    .sort(sortOptions)
+    .skip(skipAmount)
+    .limit(pageSize);
+    
+    // Count the total number of users that match the search criteria (without pagination).
+    const totalUsersCount = await User.countDocuments(query);
+    
+    const users = await usersQuery.exec();
+    
+    // Check if there are more users beyond the current page.
+    const isNext = totalUsersCount > skipAmount + users.length;
+    
+    console.log('All users fetched successfully')
+    return { users, isNext };
+} catch (error) {
+    console.error("Error fetching all users:", error);
+    throw error;
+}
+}
